@@ -42,7 +42,7 @@
  *   retention: Queue.RETENTION.ALWAYS
  * });
  * ...
- * var result = Queue.getStatus(messageId);
+ * var result = Queue.get(messageId);
  * if (result.status === Queue.STATUS.COMPLETE) {
  *    ...
  * }
