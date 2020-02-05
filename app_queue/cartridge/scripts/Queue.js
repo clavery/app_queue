@@ -265,7 +265,7 @@ exports.publish = function(queueName, message, options) {
     }
     messageObj.custom.shard = shard;
 
-    log.info("Queueing message {0}", id);
+    log.info("Queueing message {0} to {1}", id, queueName);
     Transaction.commit();
 
     if (System.instanceType !== System.PRODUCTION_SYSTEM &&

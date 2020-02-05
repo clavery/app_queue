@@ -27,8 +27,7 @@ exports.beforeStep = function (parameters) {
         "custom.priority, creationDate",
         Queue.STATUS.PENDING, Queue.STATUS.RETRY, now, shard);
 
-    log.info("Processing {0} messages", messages.count);
-    log.info("METRICS: [totalPendingMessages:{0}]", messages.count);
+    log.debug("Processing {0} messages", messages.count);
     return undefined;
 };
 
@@ -147,13 +146,13 @@ exports.process = function (message) {
         }
 
         if (message.custom.retention.value === Queue.RETENTION.NEVER) {
-            log.info("Removing message {0}", message.custom.id);
+            log.debug("Removing message {0}", message.custom.id);
             CustomObjectMgr.remove(message);
             removed++;
         }
     } else if (message.custom.status.value === Queue.STATUS.COMPLETE &&
         message.custom.retention.value !== Queue.RETENTION.ALWAYS) {
-        log.info("Removing message {0}", message.custom.id);
+        log.debug("Removing message {0}", message.custom.id);
         CustomObjectMgr.remove(message);
         removed++;
     }
@@ -166,8 +165,8 @@ exports.write = function (chunk) {
 };
 
 exports.afterChunk = function () {
-    log.info("METRICS: [processedMessages:{0}],[retriedMessages:{1}],[erroredMessages:{2}],[removedMessages:{3}]",
-        processed, retried, errored, removed);
+    log.info("METRICS: [totalPendingMessages:{0}],[processedMessages:{1}],[retriedMessages:{2}],[erroredMessages:{3}],[removedMessages:{4}]",
+        messages.count, processed, retried, errored, removed);
 };
 
 exports.afterStep = function () {
