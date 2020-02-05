@@ -1,0 +1,20 @@
+# top-most EditorConfig file
+root = true
+
+# Unix-style newlines with a newline ending every file
+[*]
+insert_final_newline = true
+trim_trailing_whitespace = false
+end_of_line = lf
+
+[*.{isml,html}]
+indent_style = space
+indent_size = 4
+
+[*.{scss,js,ds}]
+indent_style = space
+indent_size = 4
+
+[*.json]
+indent_style = space
+indent_size = 2
