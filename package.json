@@ -1,0 +1,17 @@
+{
+  "name": "app_queue",
+  "version": "0.0.1",
+  "description": "SFCC message queue implementation",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "devDependencies": {
+    "jsdoc-to-markdown": "^5.0.3"
+  },
+  "scripts": {
+    "build:docs": "jsdoc2md app_queue/cartridge/scripts/Queue.js > API.md"
+  },
+  "author": "",
+  "license": "UNLICENSED"
+}

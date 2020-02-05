@@ -1,0 +1,51 @@
+{
+  "extends": "eslint:recommended",
+  "parserOptions": {
+    "ecmaVersion": 5,
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "rules": {
+    "no-unused-vars": ["error", { "args": "none" }],
+    "react/prop-types": 0,
+    "no-console": 1,
+    "no-useless-escape": 1,
+    "indent": [
+      "error", 4, {
+        "SwitchCase": 1,
+        "ImportDeclaration": "first",
+        "ArrayExpression": 1,
+        "MemberExpression": 1
+      }
+    ],
+    "curly" : ["error", "multi-line"],
+    "dot-notation" : 1,
+    "eqeqeq" : ["error", "smart"],
+    "no-loop-func" : 2,
+    "no-trailing-spaces" : 2,
+    "semi": 2,
+    "unicode-bom" : 2
+  },
+  "env": {
+    "commonjs": true,
+    "es6": false
+  },
+  "globals": {
+    "dw": true,
+    "session" :true,
+    "module" : true,
+    "PIPELET_ERROR" : true,
+    "PIPELET_NEXT" : true,
+    "request" : true,
+    "exports" : true,
+    "empty" : true,
+    "slotcontent" : true,
+    "customer" : true,
+    "response" : true,
+    "webreferences" : true,
+    "webreferences2" : true,
+    "importPackage" : true,
+    "XML" : true
+  }
+}

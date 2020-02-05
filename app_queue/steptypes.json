@@ -1,0 +1,70 @@
+{
+  "step-types": {
+    "chunk-script-module-step": [
+      {
+        "@type-id":"custom.queue.ProcessQueues",
+        "module": "app_queue/cartridge/scripts/queue/jobs/ProcessQueue",
+        "@supports-organization-context": false,
+        "@supports-parallel-execution": false,
+        "@timeout-in-seconds": 3600,
+        "chunk-size": 10,
+        "description": "Process queue messages",
+        "before-step-function":"beforeStep",
+        "total-count-function":"getTotalCount",
+        "read-function":"read",
+        "process-function":"process",
+        "write-function":"write",
+        "after-chunk-function":"afterChunk",
+        "after-step-function":"afterStep",
+        "parameters": {
+          "parameters": [
+          ]
+        },
+        "status-codes": {
+          "status": [
+            {
+              "@code": "ERROR",
+              "description": "Used when an error occurred."
+            },
+            {
+              "@code": "OK",
+              "description": "Used when everything went well."
+            }
+          ]
+        }
+      },
+      {
+        "@type-id":"custom.queue.PurgeExpiredMessages",
+        "module": "app_queue/cartridge/scripts/queue/jobs/PurgeExpiredMessages",
+        "@supports-organization-context": false,
+        "@supports-parallel-execution": false,
+        "@timeout-in-seconds": 3600,
+        "chunk-size": 10,
+        "description": "Purge expired messages based on retention",
+        "before-step-function":"beforeStep",
+        "total-count-function":"getTotalCount",
+        "read-function":"read",
+        "process-function":"process",
+        "write-function":"write",
+        "after-chunk-function":"afterChunk",
+        "after-step-function":"afterStep",
+        "parameters": {
+          "parameters": [
+          ]
+        },
+        "status-codes": {
+          "status": [
+            {
+              "@code": "ERROR",
+              "description": "Used when an error occurred."
+            },
+            {
+              "@code": "OK",
+              "description": "Used when everything went well."
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

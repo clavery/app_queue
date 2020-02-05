@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xmlns="http://www.demandware.com/xml/impex/metadata/2006-10-31">
+    <custom-type type-id="QueueMessage">
+        <display-name xml:lang="x-default">Queue Messages (Site Scope)</display-name>
+        <description xml:lang="x-default">Generic message queue</description>
+        <staging-mode>no-staging</staging-mode>
+        <storage-scope>site</storage-scope>
+        <retention-days>14</retention-days>
+        <key-definition attribute-id="id">
+            <type>string</type>
+            <min-length>0</min-length>
+        </key-definition>
+        <attribute-definitions>
+            <attribute-definition attribute-id="args">
+                <display-name xml:lang="x-default">Serialized Message Args</display-name>
+                <type>text</type>
+                <localizable-flag>false</localizable-flag>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="callSite">
+                <display-name xml:lang="x-default">Call Site Information</display-name>
+                <type>text</type>
+                <localizable-flag>false</localizable-flag>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="errorCount">
+                <display-name xml:lang="x-default">Error Count</display-name>
+                <type>int</type>
+                <localizable-flag>false</localizable-flag>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="lastResult">
+                <display-name xml:lang="x-default">Last Result</display-name>
+                <type>text</type>
+                <localizable-flag>false</localizable-flag>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="priority">
+                <display-name xml:lang="x-default">Priority</display-name>
+                <type>enum-of-int</type>
+                <localizable-flag>false</localizable-flag>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <display xml:lang="x-default">HIGH</display>
+                        <value>0</value>
+                    </value-definition>
+                    <value-definition default="true">
+                        <display xml:lang="x-default">NORMAL</display>
+                        <value>1</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">LOW</display>
+                        <value>2</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="queueName">
+                <display-name xml:lang="x-default">Queue Name</display-name>
+                <type>string</type>
+                <localizable-flag>false</localizable-flag>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="remainingDeliveryAttempts">
+                <display-name xml:lang="x-default">Remaining Delivery Attempts</display-name>
+                <type>int</type>
+                <localizable-flag>false</localizable-flag>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="retain">
+                <display-name xml:lang="x-default">Retain</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="retainTill">
+                <display-name xml:lang="x-default">Retain Till</display-name>
+                <type>datetime</type>
+                <localizable-flag>false</localizable-flag>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="retention">
+                <display-name xml:lang="x-default">Retention</display-name>
+                <type>enum-of-string</type>
+                <localizable-flag>false</localizable-flag>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display xml:lang="x-default">On Failure</display>
+                        <value>ONFAILURE</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Never</display>
+                        <value>NEVER</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Always</display>
+                        <value>ALWAYS</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="status">
+                <display-name xml:lang="x-default">Status</display-name>
+                <type>enum-of-string</type>
+                <localizable-flag>false</localizable-flag>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <value-definitions>
+                    <value-definition default="true">
+                        <display xml:lang="x-default">Pending</display>
+                        <value>PENDING</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Retrying</display>
+                        <value>RETRY</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Complete</display>
+                        <value>COMPLETE</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Failed</display>
+                        <value>FAILED</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="visibilityTime">
+                <display-name xml:lang="x-default">Visibility Time</display-name>
+                <type>datetime</type>
+                <localizable-flag>false</localizable-flag>
+                <mandatory-flag>true</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+        </attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="general">
+                <display-name xml:lang="x-default">General</display-name>
+                <attribute attribute-id="id"/>
+                <attribute attribute-id="queueName"/>
+                <attribute attribute-id="creationDate" system="true"/>
+                <attribute attribute-id="lastModified" system="true"/>
+                <attribute attribute-id="args"/>
+                <attribute attribute-id="callSite"/>
+            </attribute-group>
+            <attribute-group group-id="delivery">
+                <display-name xml:lang="x-default">Delivery</display-name>
+                <attribute attribute-id="status"/>
+                <attribute attribute-id="remainingDeliveryAttempts"/>
+                <attribute attribute-id="errorCount"/>
+                <attribute attribute-id="visibilityTime"/>
+                <attribute attribute-id="lastResult"/>
+            </attribute-group>
+            <attribute-group group-id="retention">
+                <display-name xml:lang="x-default">Retention</display-name>
+                <attribute attribute-id="retention"/>
+                <attribute attribute-id="retainTill"/>
+            </attribute-group>
+        </group-definitions>
+    </custom-type>
+</metadata>

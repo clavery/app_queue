@@ -1,0 +1,12 @@
+{
+  "hooks": [{
+    "name": "queue",
+    "script": "./cartridge/scripts/queue/PublishHook.js"
+  }, {
+    "name": "queue.deadletter",
+    "script": "./cartridge/scripts/queue/DefaultDeadLetterSubscriber.js"
+  },{
+    "name": "queue.test.queue",
+    "script": "./cartridge/scripts/queue/TestSubscriber.js"
+  }]
+}

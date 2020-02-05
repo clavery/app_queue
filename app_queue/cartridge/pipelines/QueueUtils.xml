@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?demandware-pipeline version="2.0"?>
+
+<pipeline type="view">
+  <branch basename="TriggerQueueJob">
+    <segment>
+      <node>
+        <start-node call-mode="private" name="TriggerQueueJob" secure="false"/>
+        <node-display x="2" y="1"/>
+      </node>
+      <simple-transition>
+        <transition-display>
+          <bend-point relative-to="source" x="0" y="1"/>
+        </transition-display>
+      </simple-transition>
+      <node>
+        <pipelet-node pipelet-name="RunJobNow" pipelet-set-identifier="bc_api">
+          <key-binding alias="jobName" key="JobName"/>
+        </pipelet-node>
+        <node-display x="0" y="1"/>
+        <branch basename="b2" source-connector="error">
+          <transition target-connector="in1" target-path="./+1"/>
+        </branch>
+      </node>
+      <transition target-connector="in2" target-path="./+1"/>
+    </segment>
+    <segment>
+      <node>
+        <join-node/>
+        <node-display x="0" y="1"/>
+      </node>
+      <simple-transition/>
+      <node>
+        <end-node/>
+        <node-display x="0" y="1"/>
+      </node>
+    </segment>
+  </branch>
+</pipeline>
