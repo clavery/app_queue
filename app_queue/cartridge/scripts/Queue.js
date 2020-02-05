@@ -1,5 +1,6 @@
 /**
- * app_queue Primary API
+ * app_queue - Generic message queue for SFCC
+ *
  * @module Queue
  *
  * @example <caption>Publisher (API style)</caption>
@@ -62,6 +63,7 @@
  * exports.receive = function(queueName, message) {
  *   ...
  * };
+ *
  * # deadLetterSubscriberFailedEmails.js
  * exports.receive = function(message) {
  *   ...
@@ -180,7 +182,7 @@ var DEFAULT_OPTIONS = {
  * @param {string} queueName - name of queue to publish to
  * @param {object} message - JSON serializable message
  * @param {PublishOptions} options - optional queue publish options
- * @returns {string} - message identifier
+ * @returns {string} message identifier
  * @see PublishOptions
  */
 exports.publish = function(queueName, message, options) {
