@@ -78,6 +78,44 @@ instances and do not need adjustment)
 
 See [API](./API) for API documentation including examples.
 
+### Simple Example
+
+#### Publisher
+
+```js
+# app_something/cartridge/controllers/SomeController.js
+var Queue = require('app_queue/cartridge/scripts/Queue');
+Queue.publish('email.send', {
+  subject: 'Hello Friend',
+  to: 'test@test.com',
+  body: 'How are you',
+}, { delay: 3600, priority: Queue.PRIORITY.LOW });
+```
+
+#### Subscriber
+
+```js
+# app_something/hooks.json
+{
+  "hooks": [{
+    "name": "email.send",
+    "script": "./cartridge/scripts/EmailSendSubscriber.js"
+  }]
+}
+
+# app_something/cartridge/scripts/EmailSendSubscriber.js
+var Status = require('dw/system/Status');
+exports.receive = function(message) {
+  var mail = new Mail();
+  mail.addTo(message.to);
+  ...
+  if (sendResponse.error) {
+      return new Status(Status.ERROR, "FAILED_SEND")
+  }
+  return new Status(Status.OK);
+};
+```
+
 Queue subscribers should always return a `dw.system.Status` object with a `Status.OK` status on successful execution. Returning a non-Status object (such as a string) will result in successful execution but log a warning.
 
 All other return values including `undefined`, `dw.system.Status` with a non-OK
