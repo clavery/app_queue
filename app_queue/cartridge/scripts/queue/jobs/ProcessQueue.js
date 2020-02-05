@@ -17,10 +17,15 @@ var removed = 0;
 
 exports.beforeStep = function (parameters) {
     var now = new Date();
+    var shard = 0;
+    if (typeof parameters !== "undefined" && typeof parameters.queueShard !== "undefined") {
+        shard = parameters.queueShard;
+    }
+
     messages = CustomObjectMgr.queryCustomObjects(Queue.MESSAGE_TYPE,
-        "(custom.status = {0} OR custom.status = {1}) AND custom.visibilityTime <= {2}",
+        "(custom.status = {0} OR custom.status = {1}) AND custom.visibilityTime <= {2} AND custom.shard = {3}",
         "custom.priority, creationDate",
-        Queue.STATUS.PENDING, Queue.STATUS.RETRY, now);
+        Queue.STATUS.PENDING, Queue.STATUS.RETRY, now, shard);
 
     log.info("Processing {0} messages", messages.count);
     log.info("METRICS: [totalPendingMessages:{0}]", messages.count);

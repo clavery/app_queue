@@ -83,8 +83,6 @@ cases:
 ## Installation
 
 1. Install the cartridge in your storefront
-    - Recommend using the latest github release otherwise some functionality
-      will need to be built (see Development)
 2. Import the necessary metadata from the `metadata/` folder.
 3. Adjust site preferences as necessary (the default values work fine in most
 instances and do not need adjustment)
@@ -165,7 +163,8 @@ if (info.status === Queue.STATUS.COMPLETE) {
 }
 ```
 
-Additional details can be passed back through the use of `dw.system.Status` `details` property:
+Additional details can be passed back through the use of `dw.system.Status.details` property and retrieved via the
+`lastResult` of the message info:
 
 ```js
 // returnRequestSubscriber.js
@@ -184,6 +183,7 @@ function getRmaStatus() {
    var messageId = request.httpParameterMap.rmaRequestId.stringValue;
    var info = Queue.get(messageId);
    if (info && info.status === Queue.STATUS.COMPLETE) {
+       // note: check for empty details, etc
        var rmaNo = info.lastResult.details.rmaNo;
        ...
    }

@@ -160,6 +160,7 @@ exports.STATUS = STATUS;
  * @property {number} retentionDuration - how long to retain message on failure or complete (default 7 days)
  * @property {number} deliveryAttempts - default number of delivery attempts before failure (default 3)
  * @property {PriorityType} priority - higher priority messages are processed first (default PRIORITY.NORMAL)
+ * @property {boolean} fifo - ensure fifo delivery
  */
 
 
@@ -168,7 +169,8 @@ var DEFAULT_OPTIONS = {
     retention: RETENTION.ONFAILURE,
     retentionDuration: 604800, // 7 days
     deliveryAttempts: 3,
-    priority: PRIORITY.NORMAL
+    priority: PRIORITY.NORMAL,
+    fifo: false
 };
 
 /**
@@ -252,15 +254,28 @@ exports.publish = function(queueName, message, options) {
     messageObj.custom.retention = finalOptions.retention;
     messageObj.custom.retainTill = new Date(now.getTime() + finalOptions.retentionDuration * 1000);
 
+    var shard = 0;
+    var queueNum = Site.current.getCustomPreferenceValue("queueNumQueues");
+
+    if (!finalOptions.fifo) {
+        shard = Math.floor(Math.random() * queueNum);
+        messageObj.custom.shard = shard;
+    } else {
+        // if requesting fifo always use same queue shard
+        shard = queueName.length % 4;
+    }
+
     log.info("Queueing message {0}", id);
     Transaction.commit();
 
     if (System.instanceType !== System.PRODUCTION_SYSTEM &&
         Site.current.getCustomPreferenceValue("queueExecuteImmediately")) {
         var jobName = Site.current.getCustomPreferenceValue("queueJobName");
-        Pipeline.execute('QueueUtils-TriggerQueueJob', {
-            jobName: jobName,
-        });
+        for (var i = 0; i < queueNum; i++) {
+            Pipeline.execute('QueueUtils-TriggerQueueJob', {
+                jobName: jobName + i,
+            });
+        }
     }
     return id;
 };

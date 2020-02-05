@@ -25,6 +25,13 @@
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
             </attribute-definition>
+            <attribute-definition attribute-id="shard">
+                <display-name xml:lang="x-default">Queue Shard</display-name>
+                <type>int</type>
+                <localizable-flag>false</localizable-flag>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
             <attribute-definition attribute-id="errorCount">
                 <display-name xml:lang="x-default">Error Count</display-name>
                 <type>int</type>
@@ -146,6 +153,7 @@
             <attribute-group group-id="general">
                 <display-name xml:lang="x-default">General</display-name>
                 <attribute attribute-id="id"/>
+                <attribute attribute-id="shard"/>
                 <attribute attribute-id="queueName"/>
                 <attribute attribute-id="creationDate" system="true"/>
                 <attribute attribute-id="lastModified" system="true"/>

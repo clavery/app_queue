@@ -17,8 +17,12 @@
         "after-chunk-function":"afterChunk",
         "after-step-function":"afterStep",
         "parameters": {
-          "parameters": [
-          ]
+          "parameters": [ {
+            "@name":"queueShard",
+            "@type":"long",
+            "@required":"true",
+            "description":"Queue Shard Number"
+          } ]
         },
         "status-codes": {
           "status": [

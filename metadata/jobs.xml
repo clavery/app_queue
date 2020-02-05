@@ -1,19 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jobs xmlns="http://www.demandware.com/xml/impex/jobs/2015-07-01">
-    <job job-id="QueueProcessing" priority="0">
+    <job job-id="QueueMaintenance" priority="0">
         <description/>
         <parameters/>
-        <split sequential="false">
-            <contexts template-ref="template_24">
-                <all-storefront-sites/>
-            </contexts>
-            <flow-template template-id="template_24">
-                <step step-id="process-queues" type="custom.queue.ProcessQueues" enforce-restart="false">
-                    <description/>
-                    <parameters/>
-                </step>
-            </flow-template>
-        </split>
         <split sequential="false">
             <contexts template-ref="template_88">
                 <all-storefront-sites/>
@@ -45,6 +34,56 @@
                 <recurrence>
                     <date-from>2020-02-03Z</date-from>
                     <start-time>21:38:33.000Z</start-time>
+                    <interval>10m</interval>
+                    <day-of-week>
+                        <weekday>Friday</weekday>
+                        <weekday>Tuesday</weekday>
+                        <weekday>Saturday</weekday>
+                        <weekday>Thursday</weekday>
+                        <weekday>Wednesday</weekday>
+                        <weekday>Sunday</weekday>
+                        <weekday>Monday</weekday>
+                    </day-of-week>
+                </recurrence>
+            </run-recurring>
+        </triggers>
+    </job>
+    <job job-id="QueueProcessing0" priority="0">
+        <description/>
+        <parameters/>
+        <split sequential="false">
+            <contexts template-ref="template_24">
+                <all-storefront-sites/>
+            </contexts>
+            <flow-template template-id="template_24">
+                <step step-id="process-queues" type="custom.queue.ProcessQueues" enforce-restart="false">
+                    <description/>
+                    <parameters>
+                        <parameter name="queueShard">0</parameter>
+                    </parameters>
+                </step>
+            </flow-template>
+        </split>
+        <rules>
+            <on-running runtime-threshold="60m" enabled="true">
+                <mark-job-as-hanging/>
+                <send-mail>
+                    <from>noreply@demandware.net</from>
+                    <to>test@example.com</to>
+                </send-mail>
+            </on-running>
+            <on-exit status="ERROR" enabled="true">
+                <send-mail>
+                    <from>noreply@demandware.net</from>
+                    <to>test@example.com</to>
+                </send-mail>
+            </on-exit>
+        </rules>
+        <triggers>
+            <run-recurring enabled="true">
+                <recurrence>
+                    <date-from>2020-02-03Z</date-from>
+                    <start-time>21:38:33.000Z</start-time>
                     <interval>1m</interval>
                     <day-of-week>
                         <weekday>Friday</weekday>
@@ -59,6 +98,154 @@
             </run-recurring>
         </triggers>
     </job>
-
-
+    <job job-id="QueueProcessing1" priority="0">
+        <description/>
+        <parameters/>
+        <split sequential="false">
+            <contexts template-ref="template_24">
+                <all-storefront-sites/>
+            </contexts>
+            <flow-template template-id="template_24">
+                <step step-id="process-queues" type="custom.queue.ProcessQueues" enforce-restart="false">
+                    <description/>
+                    <parameters>
+                        <parameter name="queueShard">1</parameter>
+                    </parameters>
+                </step>
+            </flow-template>
+        </split>
+        <rules>
+            <on-running runtime-threshold="60m" enabled="true">
+                <mark-job-as-hanging/>
+                <send-mail>
+                    <from>noreply@demandware.net</from>
+                    <to>test@example.com</to>
+                </send-mail>
+            </on-running>
+            <on-exit status="ERROR" enabled="true">
+                <send-mail>
+                    <from>noreply@demandware.net</from>
+                    <to>test@example.com</to>
+                </send-mail>
+            </on-exit>
+        </rules>
+        <triggers>
+            <run-recurring enabled="true">
+                <recurrence>
+                    <date-from>2020-02-03Z</date-from>
+                    <start-time>21:38:33.000Z</start-time>
+                    <interval>1m</interval>
+                    <day-of-week>
+                        <weekday>Friday</weekday>
+                        <weekday>Tuesday</weekday>
+                        <weekday>Saturday</weekday>
+                        <weekday>Thursday</weekday>
+                        <weekday>Wednesday</weekday>
+                        <weekday>Sunday</weekday>
+                        <weekday>Monday</weekday>
+                    </day-of-week>
+                </recurrence>
+            </run-recurring>
+        </triggers>
+    </job>
+    <job job-id="QueueProcessing2" priority="0">
+        <description/>
+        <parameters/>
+        <split sequential="false">
+            <contexts template-ref="template_24">
+                <all-storefront-sites/>
+            </contexts>
+            <flow-template template-id="template_24">
+                <step step-id="process-queues" type="custom.queue.ProcessQueues" enforce-restart="false">
+                    <description/>
+                    <parameters>
+                        <parameter name="queueShard">2</parameter>
+                    </parameters>
+                </step>
+            </flow-template>
+        </split>
+        <rules>
+            <on-running runtime-threshold="60m" enabled="true">
+                <mark-job-as-hanging/>
+                <send-mail>
+                    <from>noreply@demandware.net</from>
+                    <to>test@example.com</to>
+                </send-mail>
+            </on-running>
+            <on-exit status="ERROR" enabled="true">
+                <send-mail>
+                    <from>noreply@demandware.net</from>
+                    <to>test@example.com</to>
+                </send-mail>
+            </on-exit>
+        </rules>
+        <triggers>
+            <run-recurring enabled="true">
+                <recurrence>
+                    <date-from>2020-02-03Z</date-from>
+                    <start-time>21:38:33.000Z</start-time>
+                    <interval>1m</interval>
+                    <day-of-week>
+                        <weekday>Friday</weekday>
+                        <weekday>Tuesday</weekday>
+                        <weekday>Saturday</weekday>
+                        <weekday>Thursday</weekday>
+                        <weekday>Wednesday</weekday>
+                        <weekday>Sunday</weekday>
+                        <weekday>Monday</weekday>
+                    </day-of-week>
+                </recurrence>
+            </run-recurring>
+        </triggers>
+    </job>
+    <job job-id="QueueProcessing3" priority="0">
+        <description/>
+        <parameters/>
+        <split sequential="false">
+            <contexts template-ref="template_24">
+                <all-storefront-sites/>
+            </contexts>
+            <flow-template template-id="template_24">
+                <step step-id="process-queues" type="custom.queue.ProcessQueues" enforce-restart="false">
+                    <description/>
+                    <parameters>
+                        <parameter name="queueShard">3</parameter>
+                    </parameters>
+                </step>
+            </flow-template>
+        </split>
+        <rules>
+            <on-running runtime-threshold="60m" enabled="true">
+                <mark-job-as-hanging/>
+                <send-mail>
+                    <from>noreply@demandware.net</from>
+                    <to>test@example.com</to>
+                </send-mail>
+            </on-running>
+            <on-exit status="ERROR" enabled="true">
+                <send-mail>
+                    <from>noreply@demandware.net</from>
+                    <to>test@example.com</to>
+                </send-mail>
+            </on-exit>
+        </rules>
+        <triggers>
+            <run-recurring enabled="true">
+                <recurrence>
+                    <date-from>2020-02-03Z</date-from>
+                    <start-time>21:38:33.000Z</start-time>
+                    <interval>1m</interval>
+                    <day-of-week>
+                        <weekday>Friday</weekday>
+                        <weekday>Tuesday</weekday>
+                        <weekday>Saturday</weekday>
+                        <weekday>Thursday</weekday>
+                        <weekday>Wednesday</weekday>
+                        <weekday>Sunday</weekday>
+                        <weekday>Monday</weekday>
+                    </day-of-week>
+                </recurrence>
+            </run-recurring>
+        </triggers>
+    </job>
 </jobs>
