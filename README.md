@@ -89,7 +89,7 @@ instances and do not need adjustment)
 
 ## Usage
 
-See [API](./API) for API documentation including examples.
+See [API](./API.md) for API documentation including examples.
 
 ### Simple Example
 
