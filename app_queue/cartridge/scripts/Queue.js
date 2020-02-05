@@ -261,7 +261,7 @@ exports.publish = function(queueName, message, options) {
         shard = Math.floor(Math.random() * queueNum);
     } else {
         // if requesting fifo always use same queue shard
-        shard = queueName.length % 4;
+        shard = queueName.length % queueNum;
     }
     messageObj.custom.shard = shard;
 
