@@ -21,7 +21,7 @@ function enqueueHook() {
         body: request.httpParameterMap.body.stringValue,
         when: new Date()
     };
-    var messageId = HookMgr.callHook('queue', 'publish', 'queue.test.queue', message, {
+    var messageId = HookMgr.callHook('queue', 'publish', name, message, {
         retention: Queue.RETENTION.ALWAYS,
         priority: 2
     });
