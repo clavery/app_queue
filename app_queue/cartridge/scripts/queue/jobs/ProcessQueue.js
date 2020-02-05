@@ -27,7 +27,9 @@ exports.beforeStep = function (parameters) {
         "custom.priority, creationDate",
         Queue.STATUS.PENDING, Queue.STATUS.RETRY, now, shard);
 
-    log.debug("Processing {0} messages", messages.count);
+    if (messages.count > 0) {
+        log.debug("Processing {0} messages", messages.count);
+    }
     return undefined;
 };
 
@@ -165,8 +167,11 @@ exports.write = function (chunk) {
 };
 
 exports.afterChunk = function () {
-    log.info("METRICS: [totalPendingMessages:{0}],[processedMessages:{1}],[retriedMessages:{2}],[erroredMessages:{3}],[removedMessages:{4}]",
-        messages.count, processed, retried, errored, removed);
+    if ((messages.count + processed + retried + errored + removed) > 0) {
+        // don't log unless we have some positive number to report
+        log.info("METRICS: [totalMessages:{0}],[processedMessages:{1}],[retriedMessages:{2}],[erroredMessages:{3}],[removedMessages:{4}]",
+            messages.count, processed, retried, errored, removed);
+    }
 };
 
 exports.afterStep = function () {
