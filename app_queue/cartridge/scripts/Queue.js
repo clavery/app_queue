@@ -259,11 +259,11 @@ exports.publish = function(queueName, message, options) {
 
     if (!finalOptions.fifo) {
         shard = Math.floor(Math.random() * queueNum);
-        messageObj.custom.shard = shard;
     } else {
         // if requesting fifo always use same queue shard
         shard = queueName.length % 4;
     }
+    messageObj.custom.shard = shard;
 
     log.info("Queueing message {0}", id);
     Transaction.commit();
