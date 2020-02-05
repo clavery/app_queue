@@ -213,6 +213,7 @@ Publish Options
 | retentionDuration | <code>number</code> | how long to retain message on failure or complete (default 7 days) |
 | deliveryAttempts | <code>number</code> | default number of delivery attempts before failure (default 3) |
 | priority | <code>PriorityType</code> | higher priority messages are processed first (default PRIORITY.NORMAL) |
+| fifo | <code>boolean</code> | ensure fifo delivery |
 
 <a name="module_Queue..CallSite"></a>
 
