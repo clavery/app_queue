@@ -8,7 +8,7 @@ Salesforce Commerce Cloud's custom objects, job scheduler and hooks APIs.
 * [Use Cases](#use-cases)
 * [Installation](#installation)
 * [Usage](#usage)
-    * [API](./API)
+    * [API](./API.md)
 * [Development](#development)
 
 ## Motivation
