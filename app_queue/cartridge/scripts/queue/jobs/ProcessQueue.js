@@ -64,7 +64,7 @@ exports.process = function (message) {
             if (empty(result)) {
                 lastResult.status.code = "ERROR";
                 lastResult.status.message = "Empty result from subscriber";
-            } else if(result.error) {
+            } else if (result.class === Status && result.error) {
                 lastResult.status.status = result.status;
                 lastResult.status.code = result.code;
                 lastResult.status.message = result.message;

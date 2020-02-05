@@ -5,15 +5,14 @@ Salesforce Commerce Cloud's custom objects, job scheduler and hooks APIs.
 
 ## Motivation
 
-The Job's framework in SFCC is frequently used to implement
-decoupling of orthogonal business concerns, asynchronous scripts processing, and
-message queue-like functionality but often bespoke implementations are created
-for each domain-specific purpose. Multiple implementations can lead to
-duplication of code, defects and behavior differences as well as reduced time to
-market.
+The Job's framework in SFCC is frequently used to implement decoupling of
+orthogonal business concerns, asynchronous scripts processing, and message
+queue-like functionality. But often bespoke implementations are created for
+domain-specific purpose. Multiple implementations can lead to duplication of
+code, defects and behavior differences as well as reduced time to market.
 
-The goal here is to consolidate useful queue features into a single,
-shared-library, implementation that can easily be leveraged by a storefront
+The goal here is to consolidate useful, general purpose, queue features into
+a single, shared, library that can easily be leveraged by a storefront
 implementation increasing quality and reducing time to market for new features
 that require a queue.
 
@@ -36,6 +35,7 @@ that require a queue.
 - publishing can use the API via directly referencing this cartridge or by using
   a hook to decouple from this cartridge
 - Verbose logging of message delivery and queue status including parsable metrics
+- Debugging (call site, errors, exceptions) stored with message
 - low queue cardinality is maintained via opt-in retention settings, custom
   object lifetimes and clean up jobs for expired objects.
 - TODO: Business manager module for monitoring queue status and dead letters
@@ -67,8 +67,36 @@ cases:
 
 ## Installation
 
+1. Install the cartridge in your storefront
+    - Recommend using the latest github release otherwise some functionality
+      will need to be built (see Development)
+2. Import the necessary metadata from the `metadata/` folder.
+3. Adjust site preferences as necessary (the default values work fine in most
+instances and do not need adjustment)
+
 ## Usage
 
 See [API](./API) for API documentation including examples.
 
-## Architecture
+Queue subscribers should always return a `dw.system.Status` object with a `Status.OK` status on successful execution. Returning a non-Status object (such as a string) will result in successful execution but log a warning.
+
+All other return values including `undefined`, `dw.system.Status` with a non-OK
+status, or the subscriber throwing an exception is considered a failed delivery
+and will be retried based on configuration (default 3 times with exponential
+back off). For best debugging experience a non-OK `dw.system.Status` should be
+returned or an exception thrown:
+
+```js
+exports.receive = function(message) {
+  ...
+  if (result.error) {
+    return new Status(Status.ERROR, "FAILED_SEND", "Failed to send")
+  }
+  // or
+  throw new Error("Failed to send")
+
+  return new Status(Status.OK);
+};
+```
+
+## Development

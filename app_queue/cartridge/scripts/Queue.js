@@ -66,6 +66,27 @@
  * exports.receive = function(message) {
  *   ...
  * };
+ *
+ * @example <caption>Subscriber Returning Errors</caption>
+ * # hooks.json
+ * {
+ *   "hooks": [{
+ *     "name": "email.send",
+ *     "script": "./emailSendSubscriber"
+ *   }]
+ * }
+ *
+ * # emailSendSubscriber.js
+ * exports.receive = function(message) {
+ *   ...
+ *   if (result.error) {
+ *      return new Status(Status.ERROR, "FAILED_SEND", "Failed to send")
+ *   }
+ *   // or
+ *   throw new Error("Failed to send")
+ *
+ *   return new Status(Status.OK);
+ * };
  */
 
 var CustomObjectMgr = require('dw/object/CustomObjectMgr');
@@ -133,7 +154,10 @@ exports.STATUS = STATUS;
  * Publish Options
  * @typedef {Object} PublishOptions
  * @property {number} delay - message delay in seconds
- * @property {RetentionType} retention  - The artist
+ * @property {RetentionType} retention - retention behavior
+ * @property {number} retentionDuration - how long to retain message on failure or complete (default 7 days)
+ * @property {number} deliveryAttempts - default number of delivery attempts before failure (default 3)
+ * @property {PriorityType} priority - higher priority messages are processed first (default PRIORITY.NORMAL)
  */
 
 
@@ -146,16 +170,22 @@ var DEFAULT_OPTIONS = {
 };
 
 /**
- * Publish a message to the queue
+ * Publish a message to a queue. The queue name should be any string
+ * (recommend using dotted category hierarchy i.e. email.send). Message
+ * should be any JSON serializable object.
+ *
+ * Provide optional publish options to control delay, retention, priority
+ * and other options.
  *
  * @param {string} queueName - name of queue to publish to
  * @param {object} message - JSON serializable message
  * @param {PublishOptions} options - optional queue publish options
- *
+ * @returns {string} - message identifier
+ * @see PublishOptions
  */
 exports.publish = function(queueName, message, options) {
-
     var callSite = {};
+    options = options ? options : {};
 
     // collect call site information for debugging
     try {

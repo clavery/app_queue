@@ -73,6 +73,28 @@ exports.receive = function(message) {
   ...
 };
 ```
+**Example** *(Subscriber Returning Errors)*  
+```js
+# hooks.json
+{
+  "hooks": [{
+    "name": "email.send",
+    "script": "./emailSendSubscriber"
+  }]
+}
+
+# emailSendSubscriber.js
+exports.receive = function(message) {
+  ...
+  if (result.error) {
+     return new Status(Status.ERROR, "FAILED_SEND", "Failed to send")
+  }
+  // or
+  throw new Error("Failed to send")
+
+  return new Status(Status.OK);
+};
+```
 
 * [Queue](#module_Queue)
     * _static_
@@ -89,7 +111,12 @@ exports.receive = function(message) {
 <a name="module_Queue.publish"></a>
 
 ### Queue.publish(queueName, message, options)
-Publish a message to the queue
+Publish a message to a queue. The queue name should be any string
+(recommend using dotted category hierarchy i.e. email.send). Message
+should be any JSON serializable object.
+
+Provide optional publish options to control delay, retention, priority
+and other options.
 
 **Kind**: static method of [<code>Queue</code>](#module_Queue)  
 
