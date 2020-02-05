@@ -3,6 +3,13 @@
 This cartridge implements a generic async message queue service on top of
 Salesforce Commerce Cloud's custom objects, job scheduler and hooks APIs.
 
+* [Motivation](#motivation)
+* [Features](#features)
+* [Use Cases](#use-cases)
+* [Installation](#installation)
+* [Usage](#usage)
+* [Development](#development)
+
 ## Motivation
 
 The Job's framework in SFCC is frequently used to implement decoupling of
