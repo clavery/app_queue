@@ -1,7 +1,7 @@
 <a name="module_Queue"></a>
 
 ## Queue
-app_queue Primary API
+app_queue - Generic message queue for SFCC
 
 **Example** *(Publisher (API style))*  
 ```js
@@ -23,7 +23,7 @@ HookMgr.callHook('queue', 'publish', 'email.send', {
 ```
 **Example** *(Subscriber implementation (hooks only))*  
 ```js
-# hooks.json
+// hooks.json
 {
   "hooks": [{
     "name": "email.send",
@@ -31,7 +31,7 @@ HookMgr.callHook('queue', 'publish', 'email.send', {
   }]
 }
 
-# emailSendSubscriber.js
+// emailSendSubscriber.js
 exports.receive = function(message) {
   var mail = new Mail();
   mail.addTo(message.to);
@@ -53,7 +53,7 @@ if (result.status === Queue.STATUS.COMPLETE) {
 ```
 **Example** *(Subscriber - Dead letters)*  
 ```js
-# hooks.json
+// hooks.json
 {
   "hooks": [{
     "name": "queue.deadletter",
@@ -64,18 +64,19 @@ if (result.status === Queue.STATUS.COMPLETE) {
   }]
 }
 
-# deadLetterSubscriber.js
+// deadLetterSubscriber.js
 exports.receive = function(queueName, message) {
   ...
 };
-# deadLetterSubscriberFailedEmails.js
+
+// deadLetterSubscriberFailedEmails.js
 exports.receive = function(message) {
   ...
 };
 ```
 **Example** *(Subscriber Returning Errors)*  
 ```js
-# hooks.json
+// hooks.json
 {
   "hooks": [{
     "name": "email.send",
@@ -83,7 +84,7 @@ exports.receive = function(message) {
   }]
 }
 
-# emailSendSubscriber.js
+// emailSendSubscriber.js
 exports.receive = function(message) {
   ...
   if (result.error) {
@@ -99,6 +100,7 @@ exports.receive = function(message) {
 * [Queue](#module_Queue)
     * _static_
         * [.publish(queueName, message, options)](#module_Queue.publish) ⇒ <code>string</code>
+        * [.get(messageId)](#module_Queue.get) ⇒ <code>MessageInfo</code> \| <code>null</code>
     * _inner_
         * [~RETENTION](#module_Queue..RETENTION) : <code>enum</code>
         * [~PRIORITY](#module_Queue..PRIORITY) : <code>enum</code>
@@ -107,6 +109,9 @@ exports.receive = function(message) {
         * [~PriorityType](#module_Queue..PriorityType) : <code>number</code>
         * [~StatusType](#module_Queue..StatusType) : <code>string</code>
         * [~PublishOptions](#module_Queue..PublishOptions) : <code>Object</code>
+        * [~CallSite](#module_Queue..CallSite) : <code>Object</code>
+        * [~LastResult](#module_Queue..LastResult) : <code>Object</code>
+        * [~MessageInfo](#module_Queue..MessageInfo) : <code>Object</code>
 
 <a name="module_Queue.publish"></a>
 
@@ -119,7 +124,7 @@ Provide optional publish options to control delay, retention, priority
 and other options.
 
 **Kind**: static method of [<code>Queue</code>](#module_Queue)  
-**Returns**: <code>string</code> - - message identifier  
+**Returns**: <code>string</code> - message identifier  
 **See**: PublishOptions  
 
 | Param | Type | Description |
@@ -127,6 +132,19 @@ and other options.
 | queueName | <code>string</code> | name of queue to publish to |
 | message | <code>object</code> | JSON serializable message |
 | options | <code>PublishOptions</code> | optional queue publish options |
+
+<a name="module_Queue.get"></a>
+
+### Queue.get(messageId) ⇒ <code>MessageInfo</code> \| <code>null</code>
+Retrieve status information about a message by ID
+
+**Kind**: static method of [<code>Queue</code>](#module_Queue)  
+**Returns**: <code>MessageInfo</code> \| <code>null</code> - message info or null if not found  
+**See**: MessageInfo  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| messageId | <code>string</code> | id of published message |
 
 <a name="module_Queue..RETENTION"></a>
 
@@ -195,4 +213,50 @@ Publish Options
 | retentionDuration | <code>number</code> | how long to retain message on failure or complete (default 7 days) |
 | deliveryAttempts | <code>number</code> | default number of delivery attempts before failure (default 3) |
 | priority | <code>PriorityType</code> | higher priority messages are processed first (default PRIORITY.NORMAL) |
+
+<a name="module_Queue..CallSite"></a>
+
+### Queue~CallSite : <code>Object</code>
+Call site information
+
+**Kind**: inner typedef of [<code>Queue</code>](#module_Queue)  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| filename | <code>string</code> | filename of call site |
+| lineNo | <code>number</code> | line number in filename |
+| functionName | <code>string</code> | if available the call site function name |
+
+<a name="module_Queue..LastResult"></a>
+
+### Queue~LastResult : <code>Object</code>
+Last result received from the subscriber
+
+**Kind**: inner typedef of [<code>Queue</code>](#module_Queue)  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| exception | <code>CallSite</code> | exception location information or empty |
+| status | <code>object</code> | status result of last call |
+| status.status | <code>number</code> \| <code>undefined</code> | status result (OK or ERROR) |
+| status.code | <code>string</code> \| <code>undefined</code> | status code |
+| status.message | <code>message</code> \| <code>undefined</code> | status message |
+| status.details | <code>object</code> \| <code>undefined</code> | optional details provided by the last status returned |
+
+<a name="module_Queue..MessageInfo"></a>
+
+### Queue~MessageInfo : <code>Object</code>
+Message Info
+
+**Kind**: inner typedef of [<code>Queue</code>](#module_Queue)  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| id | <code>string</code> | message id |
+| status | <code>StatusType</code> | current message status |
+| lastResult | <code>LastResult</code> | the last result if available |
+| _message | <code>object</code> | raw custom object (api may change) |
 

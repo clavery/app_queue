@@ -20,7 +20,7 @@
  * }, { delay: 3600, priority: 2 });
  *
  * @example <caption>Subscriber implementation (hooks only)</caption>
- * # hooks.json
+ * // hooks.json
  * {
  *   "hooks": [{
  *     "name": "email.send",
@@ -28,7 +28,7 @@
  *   }]
  * }
  *
- * # emailSendSubscriber.js
+ * // emailSendSubscriber.js
  * exports.receive = function(message) {
  *   var mail = new Mail();
  *   mail.addTo(message.to);
@@ -48,7 +48,7 @@
  * }
  *
  * @example <caption>Subscriber - Dead letters</caption>
- * # hooks.json
+ * // hooks.json
  * {
  *   "hooks": [{
  *     "name": "queue.deadletter",
@@ -59,18 +59,18 @@
  *   }]
  * }
  *
- * # deadLetterSubscriber.js
+ * // deadLetterSubscriber.js
  * exports.receive = function(queueName, message) {
  *   ...
  * };
  *
- * # deadLetterSubscriberFailedEmails.js
+ * // deadLetterSubscriberFailedEmails.js
  * exports.receive = function(message) {
  *   ...
  * };
  *
  * @example <caption>Subscriber Returning Errors</caption>
- * # hooks.json
+ * // hooks.json
  * {
  *   "hooks": [{
  *     "name": "email.send",
@@ -78,7 +78,7 @@
  *   }]
  * }
  *
- * # emailSendSubscriber.js
+ * // emailSendSubscriber.js
  * exports.receive = function(message) {
  *   ...
  *   if (result.error) {
@@ -172,6 +172,34 @@ var DEFAULT_OPTIONS = {
 };
 
 /**
+ * Call site information
+ * @typedef {Object} CallSite
+ * @property {string} filename - filename of call site
+ * @property {number} lineNo - line number in filename
+ * @property {string} functionName - if available the call site function name
+ */
+
+/**
+ * Last result received from the subscriber
+ * @typedef {Object} LastResult
+ * @property {CallSite} exception - exception location information or empty
+ * @property {object} status - status result of last call
+ * @property {number|undefined} status.status - status result (OK or ERROR)
+ * @property {string|undefined} status.code - status code
+ * @property {message|undefined} status.message - status message
+ * @property {object|undefined} status.details - optional details provided by the last status returned
+ */
+
+/**
+ * Message Info
+ * @typedef {Object} MessageInfo
+ * @property {string} id - message id
+ * @property {StatusType} status - current message status
+ * @property {LastResult} lastResult - the last result if available
+ * @property {object} _message - raw custom object (api may change)
+ */
+
+/**
  * Publish a message to a queue. The queue name should be any string
  * (recommend using dotted category hierarchy i.e. email.send). Message
  * should be any JSON serializable object.
@@ -235,4 +263,34 @@ exports.publish = function(queueName, message, options) {
         });
     }
     return id;
+};
+
+/**
+ * Retrieve status information about a message by ID
+ *
+ * @see MessageInfo
+ *
+ * @param {string} messageId - id of published message
+ * @returns {MessageInfo|null} message info or null if not found
+ */
+exports.get = function(messageId) {
+    var message = CustomObjectMgr.getCustomObject(exports.MESSAGE_TYPE, messageId);
+    if (empty(message)) {
+        return null;
+    }
+
+    var lastResult = {
+        exception: {},
+        status: {}
+    };
+    try {
+        lastResult = JSON.parse(message.custom.lastResult);
+    } catch(e) { /* ignore */ }
+
+    return {
+        id: messageId,
+        status: message.custom.status.value,
+        lastResult: lastResult,
+        _message: message
+    };
 };

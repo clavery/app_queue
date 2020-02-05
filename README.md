@@ -26,7 +26,7 @@ that require a queue.
 
 ## Features
 
-- [Simple API](./API.md)
+- [Simple API](#usage)
 - Delivers messages to named queues
 - delayed message support
 - optional FIFO support for the same queue name and message priority
@@ -47,6 +47,13 @@ that require a queue.
 - low queue cardinality is maintained via opt-in retention settings, custom
   object lifetimes and clean up jobs for expired objects.
 - TODO: Business manager module for monitoring queue status and dead letters
+    - In the meantime custom object search in BM can be used to view, edit and
+      requeue messages (i.e. dead letters after fixing code defects)
+
+### Limitations
+
+- Currently only site-scoped messages are supported; Organizational messages
+  will be supported later
 
 ## Use Cases
 
@@ -91,7 +98,7 @@ See [API](./API) for API documentation including examples.
 #### Publisher
 
 ```js
-# app_something/cartridge/controllers/SomeController.js
+// app_something/cartridge/controllers/SomeController.js
 var Queue = require('app_queue/cartridge/scripts/Queue');
 Queue.publish('email.send', {
   subject: 'Hello Friend',
@@ -103,7 +110,7 @@ Queue.publish('email.send', {
 #### Subscriber
 
 ```js
-# app_something/hooks.json
+// app_something/hooks.json
 {
   "hooks": [{
     "name": "email.send",
@@ -111,7 +118,7 @@ Queue.publish('email.send', {
   }]
 }
 
-# app_something/cartridge/scripts/EmailSendSubscriber.js
+// app_something/cartridge/scripts/EmailSendSubscriber.js
 var Status = require('dw/system/Status');
 exports.receive = function(message) {
   var mail = new Mail();
@@ -143,6 +150,44 @@ exports.receive = function(message) {
 
   return new Status(Status.OK);
 };
+```
+
+#### Getting Message Status Information
+
+The last delivery result (error or success) is serialized in the message result. This includes the `dw.system.Status`
+object as well as any exception information. `Queue.get(...)` can be used to retrieve message status information given
+the message ID returned from `Queue.publish(...)`.
+
+```js
+var info = Queue.get(messageId);
+if (info.status === Queue.STATUS.COMPLETE) {
+    // do something
+}
+```
+
+Additional details can be passed back through the use of `dw.system.Status` `details` property:
+
+```js
+// returnRequestSubscriber.js
+exports.receive = function(message) {
+    var rmaNo = ExternalIntegration.doReturn(message.items);
+    ...
+    var status = new Status(Status.OK);
+    status.addDetail("rmaNo", rmaNo);
+    return status;
+};
+```
+
+```js
+// SomeController.js
+function getRmaStatus() {
+   var messageId = request.httpParameterMap.rmaRequestId.stringValue;
+   var info = Queue.get(messageId);
+   if (info && info.status === Queue.STATUS.COMPLETE) {
+       var rmaNo = info.lastResult.details.rmaNo;
+       ...
+   }
+}
 ```
 
 ## Development

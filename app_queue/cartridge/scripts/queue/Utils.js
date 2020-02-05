@@ -1,4 +1,3 @@
-
 exports.assign = function(target) {
     var to = Object(target);
 
@@ -24,14 +23,15 @@ exports.callSiteFromException = function(e, popNum) {
     try {
         var stack = e.stack;
         var stackLines = stack.split("\n").slice(popNum);
-        if (stackLines[1].indexOf('PublishHook') !== -1) {
+        // if using publish hook API jump another level
+        if (stackLines[0].indexOf('PublishHook') !== -1) {
             stackLines = stack.split("\n").slice(popNum+1);
         }
         var sourceMatch = stackLines.shift().match(CODE_LINE);
         if (sourceMatch) {
             callSite = {
                 filename: sourceMatch[1],
-                lineNo: sourceMatch[2]
+                lineNo: parseInt(sourceMatch[2])
             };
             if (sourceMatch[4]) {
                 callSite.functionName = sourceMatch[4];
@@ -40,4 +40,18 @@ exports.callSiteFromException = function(e, popNum) {
     } catch(e) { /* ignore */ }
 
     return callSite;
+};
+
+exports.mapToObject = function(map) {
+    if (empty(map)) {
+        return {};
+    }
+
+    var target = {};
+    var keyIt = map.keySet().iterator();
+    while(keyIt.hasNext()) {
+        var key = keyIt.next();
+        target[key] = map.get(key);
+    }
+    return target;
 };

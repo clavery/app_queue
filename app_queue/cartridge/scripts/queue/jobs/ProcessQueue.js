@@ -61,6 +61,7 @@ exports.process = function (message) {
                 result = HookMgr.callHook(queueName, 'receive', args);
             });
 
+            lastResult.status.details = {};
             if (empty(result)) {
                 lastResult.status.code = "ERROR";
                 lastResult.status.message = "Empty result from subscriber";
@@ -68,17 +69,19 @@ exports.process = function (message) {
                 lastResult.status.status = result.status;
                 lastResult.status.code = result.code;
                 lastResult.status.message = result.message;
+                lastResult.status.details = Utils.mapToObject(result.details);
             } else if (result.class !== Status) {
                 log.warn("Result from subscriber hook was NOT a dw.system.Status object");
                 lastResult.status.status = Status.OK;
                 lastResult.status.code = "OK";
-                lastResult.status.message = result;
+                lastResult.status.details = result;
                 processed++;
                 success = true;
             } else {
                 lastResult.status.status = result.status;
                 lastResult.status.code = result.code;
                 lastResult.status.message = result.message;
+                lastResult.status.details = Utils.mapToObject(result.details);
                 processed++;
                 success = true;
             }
@@ -91,11 +94,18 @@ exports.process = function (message) {
         }
         lastResult.status.code = "EXCEPTION";
         lastResult.status.message = e.toString();
+        lastResult.status.details = {};
         errored++;
     }
 
     Transaction.begin();
-    message.custom.lastResult = JSON.stringify(lastResult, null, 2);
+    try {
+        message.custom.lastResult = JSON.stringify(lastResult, null, 2);
+    } catch (e) {
+        log.error("Error serializing last result for message {0} (may contain unserializable elements): {1}", message.custom.id, e);
+        message.custom.lastResult = "{}";
+    }
+
     message.custom.remainingDeliveryAttempts--;
     if (success) {
         message.custom.status = Queue.STATUS.COMPLETE;
