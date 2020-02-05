@@ -1,5 +1,20 @@
 var Queue = require('app_queue/cartridge/scripts/Queue');
 var HookMgr = require('dw/system/HookMgr');
+var Site = require('dw/system/Site');
+var Pipeline = require('dw/system/Pipeline');
+
+function runQueues() {
+    var queueNum = Site.current.getCustomPreferenceValue("queueNumQueues");
+    var jobName = Site.current.getCustomPreferenceValue("queueJobName");
+    for (var i = 0; i < queueNum; i++) {
+        Pipeline.execute('QueueUtils-TriggerQueueJob', {
+            jobName: jobName + i,
+        });
+    }
+    response.setContentType('text/plain');
+    response.writer.println("Running queues");
+}
+runQueues.public = true;
 
 function enqueue() {
     var name = "queue.test.queue";
@@ -47,4 +62,5 @@ if (dw.system.System.instanceType !== dw.system.System.PRODUCTION_SYSTEM) {
     exports.Enqueue = enqueue;
     exports.EnqueueHook = enqueueHook;
     exports.GetStatus = getStatus;
+    exports.RunQueues = runQueues;
 }

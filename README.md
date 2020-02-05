@@ -36,6 +36,9 @@ that require a queue.
     - Allows for notifications, recovery due to coding or transient errors and
       alternative business logic for messages that fail delivery to subscribers
 - optional retention of messages (by default failures are retained)
+- optional immediate execution of job in sandbox environments
+    - TODO: this is currently disabled due to SFCC bug
+    - Workaround: run the jobs manually or use the `TestQueue-RunQueues` controller provided
 - Subscribers to queues are implemented using hooks
     - decouples business logic from this cartridge
 - publishing can use the API via directly referencing this cartridge or by using
