@@ -3,11 +3,11 @@
     <type-extension type-id="SitePreferences">
         <custom-attribute-definitions>
             <attribute-definition attribute-id="queueExecuteImmediately">
-                <display-name xml:lang="x-default">Execute Queue Job Immediately (non-prod)</display-name>
+                <display-name xml:lang="x-default">Execute Queue Job Immediately (not implemented)</display-name>
                 <type>boolean</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
-                <default-value>true</default-value>
+                <default-value>false</default-value>
             </attribute-definition>
             <attribute-definition attribute-id="queueNumQueues">
                 <display-name xml:lang="x-default">Number of queue jobs</display-name>

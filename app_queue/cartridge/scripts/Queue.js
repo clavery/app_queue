@@ -268,15 +268,17 @@ exports.publish = function(queueName, message, options) {
     log.info("Queueing message {0} to {1}", id, queueName);
     Transaction.commit();
 
-    if (System.instanceType !== System.PRODUCTION_SYSTEM &&
-        Site.current.getCustomPreferenceValue("queueExecuteImmediately")) {
-        var jobName = Site.current.getCustomPreferenceValue("queueJobName");
-        for (var i = 0; i < queueNum; i++) {
-            Pipeline.execute('QueueUtils-TriggerQueueJob', {
-                jobName: jobName + i,
-            });
-        }
-    }
+    /* This is disabled pending fix of a defect with salesforce (logging breaks when using RunJobNow
+     * pipelet/
+    /* if (System.instanceType !== System.PRODUCTION_SYSTEM && */
+    /*     Site.current.getCustomPreferenceValue("queueExecuteImmediately")) { */
+    /*     var jobName = Site.current.getCustomPreferenceValue("queueJobName"); */
+    /*     for (var i = 0; i < queueNum; i++) { */
+    /*         Pipeline.execute('QueueUtils-TriggerQueueJob', { */
+    /*             jobName: jobName + i, */
+    /*         }); */
+    /*     } */
+    /* } */
     return id;
 };
 

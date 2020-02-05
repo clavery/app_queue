@@ -36,8 +36,6 @@ that require a queue.
     - Allows for notifications, recovery due to coding or transient errors and
       alternative business logic for messages that fail delivery to subscribers
 - optional retention of messages (by default failures are retained)
-- optional immediate execution of job in sandbox environments
-    - avoids needing to execute the processing job in business manager
 - Subscribers to queues are implemented using hooks
     - decouples business logic from this cartridge
 - publishing can use the API via directly referencing this cartridge or by using
