@@ -96,7 +96,7 @@ var Transaction = require('dw/system/Transaction');
 var UUIDUtils = require('dw/util/UUIDUtils');
 var Logger = require('dw/system/Logger');
 var Site = require('dw/system/Site');
-var System = require('dw/system/System');
+/* var System = require('dw/system/System'); */
 /* var Pipeline = require('dw/system/Pipeline'); */
 
 var Utils = require('./queue/Utils');

@@ -63,7 +63,7 @@ exports.process = function (message) {
 
         if (HookMgr.hasHook(queueName)) {
             var result;
-            Transaction.wrap(function() {
+            Transaction.wrap(function () {
                 result = HookMgr.callHook(queueName, 'receive', args);
             });
 
@@ -117,6 +117,7 @@ exports.process = function (message) {
         message.custom.status = Queue.STATUS.COMPLETE;
     } else {
         message.custom.errorCount++;
+        errored++;
 
         if (message.custom.remainingDeliveryAttempts <= 0) {
             log.error("Message {0} failed to deliver", message.custom.id);
@@ -127,12 +128,13 @@ exports.process = function (message) {
             message.custom.status = Queue.STATUS.RETRY;
             var now = new Date();
             message.custom.visibilityTime = new Date(now.getTime() +
-                Math.pow(2, message.custom.errorCount) * (60*1000));
+                Math.pow(2, message.custom.errorCount) * (60 * 1000));
         }
     }
 
     // dead letter
     if (message.custom.status.value === Queue.STATUS.FAILED) {
+        var deadLetterResult;
         try {
             if (HookMgr.hasHook('queue.deadletter')) {
                 HookMgr.callHook('queue.deadletter', 'receive', queueName, args);
@@ -141,9 +143,9 @@ exports.process = function (message) {
             }
 
             if (HookMgr.hasHook('queue.deadletter.' + queueName)) {
-                HookMgr.callHook('queue.deadletter.' + queueName, 'receive', queueName, args);
+                deadLetterResult = HookMgr.callHook('queue.deadletter.' + queueName, 'receive', queueName, args);
             }
-        } catch(e) {
+        } catch (e) {
             log.error("Error delivering to dead letter queue(s): {0}", e);
         }
 
@@ -151,6 +153,10 @@ exports.process = function (message) {
             log.debug("Removing message {0}", message.custom.id);
             CustomObjectMgr.remove(message);
             removed++;
+        } else if (!empty(deadLetterResult) && deadLetterResult.class === Status && !deadLetterResult.error) {
+            log.debug("Removing message {0} due to dead letter queue returning OK status", message.custom.id);
+            removed++;
+            CustomObjectMgr.remove(message);
         }
     } else if (message.custom.status.value === Queue.STATUS.COMPLETE &&
         message.custom.retention.value !== Queue.RETENTION.ALWAYS) {
