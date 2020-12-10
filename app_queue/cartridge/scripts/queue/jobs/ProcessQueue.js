@@ -120,11 +120,11 @@ exports.process = function (message) {
         errored++;
 
         if (message.custom.remainingDeliveryAttempts <= 0) {
-            log.error("Message {0} failed to deliver", message.custom.id);
+            log.error("Message {0} failed to deliver to {1}", message.custom.id, queueName);
             message.custom.status = Queue.STATUS.FAILED;
         } else {
-            log.error("Message {0} failed to deliver; will retry {1} more times", message.custom.id,
-                message.custom.remainingDeliveryAttempts);
+            log.warn("Message {0} failed to deliver to {2}; will retry {1} more times", message.custom.id,
+                message.custom.remainingDeliveryAttempts, queueName);
             message.custom.status = Queue.STATUS.RETRY;
             var now = new Date();
             message.custom.visibilityTime = new Date(now.getTime() +
@@ -139,7 +139,7 @@ exports.process = function (message) {
             if (HookMgr.hasHook('queue.deadletter')) {
                 HookMgr.callHook('queue.deadletter', 'receive', queueName, args);
             } else {
-                log.warning("No dead letter queue available");
+                log.warn("No dead letter queue available");
             }
 
             if (HookMgr.hasHook('queue.deadletter.' + queueName)) {
