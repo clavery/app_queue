@@ -65,7 +65,7 @@
  * };
  *
  * // deadLetterSubscriberFailedEmails.js
- * exports.receive = function(message) {
+ * exports.receive = function(queueName, message) {
  *   ...
  * };
  *

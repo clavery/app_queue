@@ -136,14 +136,15 @@ exports.process = function (message) {
     if (message.custom.status.value === Queue.STATUS.FAILED) {
         var deadLetterResult;
         try {
-            if (HookMgr.hasHook('queue.deadletter')) {
-                HookMgr.callHook('queue.deadletter', 'receive', queueName, args);
-            } else {
-                log.warn("No dead letter queue available");
-            }
-
             if (HookMgr.hasHook('queue.deadletter.' + queueName)) {
                 deadLetterResult = HookMgr.callHook('queue.deadletter.' + queueName, 'receive', queueName, args);
+            }
+
+            if (HookMgr.hasHook('queue.deadletter') && (empty(deadLetterResult) || deadLetterResult.error)) {
+                // Call generic dead letter if no specific result is available or resulted in an error
+                HookMgr.callHook('queue.deadletter', 'receive', queueName, args);
+            } else {
+                log.warn("No generic dead letter queue available");
             }
         } catch (e) {
             log.error("Error delivering to dead letter queue(s): {0}", e);
