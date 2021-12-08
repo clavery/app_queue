@@ -7,7 +7,7 @@
     "test": "tests"
   },
   "devDependencies": {
-    "jsdoc-to-markdown": "^5.0.3"
+    "jsdoc-to-markdown": "7.1.0"
   },
   "scripts": {
     "build:docs": "jsdoc2md app_queue/cartridge/scripts/Queue.js > API.md"
